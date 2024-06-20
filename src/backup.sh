@@ -105,8 +105,10 @@ TIME_UPLOADED="0"
 if [ ! -z "$AWS_S3_BUCKET_NAME" ]; then
   info "Uploading backup to S3"
   echo "Will upload to bucket \"$AWS_S3_BUCKET_NAME\""
+  [[ -z "$S3_HOST" ]] && echo "Your chosen host is: default (aws)" || echo "Your chosen host is: $S3_HOST"
   TIME_UPLOAD="$(date +%s.%N)"
-  aws $AWS_EXTRA_ARGS s3 cp --only-show-errors "$BACKUP_FILENAME" "s3://$AWS_S3_BUCKET_NAME/"
+  OWN_S3_HOST="--endpoint-url="$S3_HOST""
+  aws $AWS_EXTRA_ARGS s3 cp --only-show-errors "$BACKUP_FILENAME" "s3://$AWS_S3_BUCKET_NAME/" $OWN_S3_HOST
   echo "Upload finished"
   TIME_UPLOADED="$(date +%s.%N)"
 fi
